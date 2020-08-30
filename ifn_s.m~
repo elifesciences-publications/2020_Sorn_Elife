@@ -1,0 +1,52 @@
+function [irf_in,usp_level] = ifn_s(k,n1,n2, pretreatTime)
+
+switch pretreatTime
+    case 2
+        len = 45; 
+    case 10
+        len = 53;            
+    case 24
+        len = 67;
+end
+
+
+
+dt = 0.001;
+total_step = round(len/dt);
+
+thresh = k(6)/dt;
+irf = zeros(1,total_step+1);
+irf(1) = 45;
+usp = zeros(1,total_step+1);
+t =  zeros(1,total_step+1);
+
+pf = @(X) k(1)*X/(k(2)+X); nf = @(X) (k(3)/(k(3)+X));
+%% stimulation 
+ifn = zeros(1,total_step+1)-1;
+sti_length1 = pret/dt;
+sti_length2 = 35/dt;
+
+ifn(1:sti_length1+1) = 0:sti_length1;
+starting_pos = sti_length1+8/dt+2;
+ifn(starting_pos:starting_pos+sti_length2) = 0:sti_length2;
+sti_u = (ifn>=thresh); sti_i = (ifn>=0);
+%%
+
+
+for i = 1:total_step
+    p = pf(irf(i));    n = nf(usp(i));
+    
+    di = sti_i(i)*(k(4)+p)*n;
+    du = sti_u(i)*(k(5)+p)*n;
+    
+    irf(i+1) = max(irf(i) + dt*di + dt*n1*randn,0);
+    usp(i+1) = max(usp(i) + dt*du + dt*n2*randn,0);
+    t(i+1) = t(i) + dt;
+end
+irf(end) = max(irf(end),0);
+usp(end) = max(usp(end),0);  
+
+st = find(t>=(len-34),1);
+
+irf_in = irf(end)-irf(st);
+usp_level = usp(st);
