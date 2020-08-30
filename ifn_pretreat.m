@@ -1,11 +1,7 @@
-function output = ifn_pretreat(pretreatTime)
-    % function for deterministic simulations
-    
-    %% parameters
-    load('best_para.mat', 'new_var')
-    k = new_var(1,:);
-    k(6) = round(k(6));
-    
+function [output, output2] = ifn_pretreat(k, pretreatTime, R)
+% function to simulate each experiment
+    % output is empty for sustained input, 
+    % output2 in empty for 0 2 10 24
     switch pretreatTime
         case 0
             len = 20; % this is the control
@@ -15,6 +11,8 @@ function output = ifn_pretreat(pretreatTime)
             len = 38;            
         case 24
             len = 52;  
+        case -1
+            len = 46; % this is the sustained input
     end
 
     dt = 0.0001; 
@@ -37,6 +35,9 @@ function output = ifn_pretreat(pretreatTime)
             ifn = zeros(1,total_step+1)-1;
             sti_length = 10/dt;
             ifn(1:sti_length+1) = 0:sti_length;
+        case -1
+            % for sustained input
+            ifn = 0:total_step;
         otherwise
             % for other pretreatment
             sti_length1 = pretreatTime/dt; 
@@ -64,9 +65,14 @@ function output = ifn_pretreat(pretreatTime)
     switch pretreatTime
         case 0 % for control
             output = irf(end) - irf(1);
+            output2 = [];
+        case -1 % for sustained input
+            output = [];
+            output2 = irf(R); 
         otherwise % for other pretreatment
             st = find(t>=(len-20),1);
             output = irf(end)-irf(st);
+            output2 = [];
     end
 end
 
