@@ -6,4 +6,3 @@
 2. ifn_pretreat(pretreatTime)
 	- This function outputs the induction of IRF9 when different pretreatment time of IFN-alpha is given to the cells. The only input needed for using this function is pretreatment time. 
 	- The bar chart in fig3 contains 3 experiments, namely 2hr, 10hr and 24hr pretreatment experients. 
-}
