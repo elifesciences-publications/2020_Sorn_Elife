@@ -1,3 +1,5 @@
+This code is associated with the paper from Mudla et al., "Cell-cycle-gated feedback control mediates desensitization to interferon stimulation". eLife, 2020. http://dx.doi.org/10.7554/eLife.58825
+
 **Instructions for using code**
 1. ifn_stochastic(pretreatTime, numb_of_cells)
 	- To use this function, input pretreatment	time of IFN-alpha and the desired number of cells you want. The output of this function is IRF9 induction and USP18 level at the onset of the second stimulation.
